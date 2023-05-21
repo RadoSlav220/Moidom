@@ -1,0 +1,638 @@
+﻿<!DOCTYPE html>
+
+<!-- Радослав Иванов, група 2, ф.н. 82154 -->
+
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="three.min.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script src="CSG.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			const FN = 82154; // факултетен номер 
+		</script>
+		
+		<script src="init.js"></script>
+			
+		<script>
+		
+			// 1. преименувайте файла на moidom-g-fn.html
+			//    g=номер на група, а fn=факултетен номер
+			//
+			// 2. сменете стойността на константата FN да
+			//    е факултетния номер, за да се генерират
+			//    сцената, земята и контурът на къщата ви
+			//
+			// 3. едва тогава почвайте да строите стените
+			//    и да добавяте исканите обекти по стаите
+			//
+			// 4. init.js се създава глобален обект scene
+			//    и в него трябва да сложите обектите си!
+			//
+			// 5. кубът по-долу е само за пример как може
+			//    да се слагат обекти в сцената
+			
+
+			var wallMaterial = new THREE.MeshPhongMaterial({color: 'brown'});
+			
+			function createWall(posX, posY, posZ, length, height, rotation)
+			{
+				var wallGeometry = new THREE.BoxGeometry(length, height, 0.2);
+				var wall = new THREE.Mesh(wallGeometry, wallMaterial);
+				wall.position.set(posX, posY, posZ);
+				wall.rotation.y = rotation;
+				wall.receiveShadow = true;
+				wall.castShadow = true;
+				scene.add(wall);
+			}
+
+			var walls = 
+			[
+				//horizontal walls
+				//1st row
+				[1, 3/2, -4.9, 4, 3, 0],
+				[-2, 1/2, -4.9, 2, 1, 0],
+				[-3.5, 3/2, -4.9, 1, 3, 0],
+				
+				//2nd row
+				[4, 3/2, -1.9, 4, 3, 0],
+				[-3, 3/2, -1.9, 4, 3, 0],
+				[-6, 1/2, -1.9, 2, 1, 0],
+				[-7.5, 3/2, -1.9, 1, 3, 0],
+				
+				//3rd row
+				[4, 3/2, 2, 4, 3, 0],
+				
+				//4th row
+				[-3, 3/2, 3, 4, 3, 0],
+				[-6, 2+1/2, 3, 2, 1, 0],
+				[-7.5, 3/2, 3, 1, 3, 0],
+				
+				//5th row
+				[4.5, 3/2, 5.9, 3, 3, 0],
+				[-4.5, 3/2, 5.9, 7, 3, 0],
+
+				//6th row
+				[2.5, 3/2, 8.9, 1, 3, 0],
+				[1, 1/2, 8.9, 2, 1, 0],
+				[-1, 3/2, 8.9, 2, 3, 0],
+				[-2.5, 2/2, 8.9, 1, 2, 0],
+				[-3.5, 3/2, 8.9, 1, 3, 0],
+
+				//vertical walls
+				//1st row
+				[5.9, 3/2, 5.5, 1, 3, Math.PI/2],
+				[5.9, 1/2, 4, 2, 1, Math.PI/2],
+				[5.9, 3/2, 2, 2, 3, Math.PI/2],
+				[5.9, 1/2, 0, 2, 1, Math.PI/2],
+				[5.9, 3/2, -1.5, 1, 3, Math.PI/2],
+				
+				//2nd row
+				[2.9, 3/2, 8.5, 1, 3, Math.PI/2],
+				[2.9, 2+1/2, 7.5, 1, 1, Math.PI/2],
+				[2.9, 3/2, 6.4, 1.2, 3, Math.PI/2],
+				[2.9, 3/2, -3.5, 3, 3, Math.PI/2],
+
+				//3rd row
+				[2, 3/2, 4.5+0.02, 1.04, 3, Math.PI/2],
+				[2, 2+1/2, 3.5, 1, 1, Math.PI/2],
+				[2, 3/2, 2, 2, 3, Math.PI/2],
+				[2, 2+1/2, 0.5, 1, 1, Math.PI/2],
+				[2, 3/2, -1, 2, 3, Math.PI/2],
+
+				//4th row
+				[0, 3/2, 8.5, 1, 3, Math.PI/2],
+				[0, 2+1/2, 7.5-0.065, 1.13, 1, Math.PI/2],
+				//[0, 3/2, 6.5, 1, 3, Math.PI/2],
+				
+				//5th row
+				[-1, 3/2, 5.5, 1, 3, Math.PI/2],
+				[-1, 2+1/2, 4.5, 1, 1, Math.PI/2],
+				[-1, 3/2, 3, 2, 3, Math.PI/2],
+				[-1, 2+1/2, 1.5, 1, 1, Math.PI/2],
+				[-1, 3/2, -0.5, 3, 3, Math.PI/2],
+
+				//6th row
+				[-3.9, 3/2, 7.5, 3, 3, Math.PI/2],
+				[-3.9, 3/2, -2.5, 1, 3, Math.PI/2],
+				[-3.9, 2+1/2, -3.5, 1, 1, Math.PI/2],
+				[-3.9, 3/2, -4.5, 1, 3, Math.PI/2],
+
+				//7th row
+				[-7.9, 1/2, 5, 2, 1, Math.PI/2],
+				[-7.9, 3/2, 3, 2, 3, Math.PI/2],
+				[-7.9, 1/2, 0.5, 3, 1, Math.PI/2],
+				[-7.9, 3/2, -1.5, 1, 3, Math.PI/2],
+
+				//italic walls
+				[2.5-0.021/Math.sqrt(2), 3/2, 5.5-0.021/Math.sqrt(2), Math.sqrt(2)+0.042, 3, -Math.PI/4],
+				[-0.5, 3/2, 6.5-0.09, Math.sqrt(2)+0.08, 3, -Math.PI/4],
+
+				//over windows walls
+				[  -2, 2.9, -4.9,   2, 0.2, 0],
+				[  -6, 2.9, -1.9,   2, 0.2, 0],
+				[1.05, 2.9,  8.9, 1.9, 0.2, 0],
+				[ 5.9, 2.9,    0,   2, 0.2, Math.PI/2],
+				[ 5.9, 2.9,    4,   2, 0.2, Math.PI/2],
+				[-7.9, 2.9,  4.9, 1.8, 0.2, Math.PI/2],
+				[-2.5, 2.9,  8.9,   1, 0.2, 0],
+				[-7.9, 2.9,  0.5,   3, 0.2, Math.PI/2]
+			];
+
+			//creating the walls
+			for (var i=0; i<walls.length; ++i){
+				createWall(walls[i][0], walls[i][1], walls[i][2], walls[i][3], walls[i][4], walls[i][5]);
+			}
+
+
+			//------------------ creating single glass windows --------------------//
+			                 // frame is 0.1, glass is 0.02 by default//
+			function createSingleGlassWindow (posX, posY, posZ, length, heigth, width, rotation)
+			{
+				var SingleGlassWindow = new THREE.Group();
+			
+				var windowsFrameMaterial = new THREE.MeshPhongMaterial({color: 'white'});
+				var frame = new THREE.Mesh (
+					new THREE.BoxGeometry(length, heigth, width), 
+					windowsFrameMaterial
+				);
+
+				var glassMaterial = new THREE.MeshStandardMaterial( {color: 'cyan', opacity: 0.5, transparent: true});
+				var glassHole1 = new THREE.Mesh (
+					new THREE.BoxGeometry(length-0.2, heigth-0.2, width),
+					glassMaterial
+				);
+
+				var csg = new CSG();
+				csg.subtract([frame, glassHole1]);
+				frame = csg.toMesh();
+				frame.material = windowsFrameMaterial;
+				
+				SingleGlassWindow.add(frame);
+
+				var glass = new THREE.Mesh (
+					new THREE.BoxGeometry(length-0.2, heigth-0.2, 0.02),
+					glassMaterial
+				);
+				SingleGlassWindow.add(glass);
+				
+				SingleGlassWindow.position.set(posX, posY, posZ);
+				SingleGlassWindow.rotation.y = rotation;
+				scene.add(SingleGlassWindow);
+			}
+
+			var SingleGlassWindowsParameters = [
+				[-2.5, 2.4, 8.9, 1, 0.8, 0.22, 0]  
+			];
+
+			for (var i=0; i<SingleGlassWindowsParameters.length; ++i){
+				createSingleGlassWindow(SingleGlassWindowsParameters[i][0],
+										SingleGlassWindowsParameters[i][1],
+										SingleGlassWindowsParameters[i][2],
+										SingleGlassWindowsParameters[i][3],
+										SingleGlassWindowsParameters[i][4],
+										SingleGlassWindowsParameters[i][5],
+										SingleGlassWindowsParameters[i][6]);
+			}
+
+
+			//--------------------creating double glassed windows-------------------//
+			      //frame is 0.1 wide by default, glass - 0.02//
+			function createDoubleGlassWindow (posX, posY, posZ, length, heigth, width, rotation)
+			{
+				var doubleGlassWindow = new THREE.Group();
+			
+				var windowsFrameMaterial = new THREE.MeshPhongMaterial({color: 'white'});
+				var frame = new THREE.Mesh (
+					new THREE.BoxGeometry(length, heigth, width),
+					windowsFrameMaterial
+				);
+
+				var glassMaterial = new THREE.MeshStandardMaterial( {color: 'cyan', opacity: 0.5, transparent: true});
+				var glassHole1 = new THREE.Mesh (
+					new THREE.BoxGeometry((length-0.3)/2, heigth-0.2, width),
+					glassMaterial
+				);
+				var glassHole2 = glassHole1.clone();
+				glassHole1.position.x = -(length-0.3)/4-0.05;
+				glassHole2.position.x = (length-0.3)/4+0.05;
+
+				var csg = new CSG();
+				csg.subtract([frame, glassHole1, glassHole2]);
+				frame = csg.toMesh();
+				frame.material = windowsFrameMaterial;
+				
+				doubleGlassWindow.add(frame);
+
+				var glass = new THREE.Mesh (
+					new THREE.BoxGeometry((length-0.3)/2, heigth-0.2, 0.02),
+					glassMaterial
+				);
+				glass.position.x = -(length-0.3)/4-0.05;
+				doubleGlassWindow.add(glass);
+				glass = glass.clone();
+				glass.position.x = (length-0.3)/4+0.05;
+				doubleGlassWindow.add(glass);
+		
+				doubleGlassWindow.position.set(posX, posY, posZ);
+				doubleGlassWindow.rotation.y = rotation;
+				scene.add(doubleGlassWindow);
+			}
+
+			var doubleGlassWindowsParameters = [
+				[  -2,   1.9, -4.9,   2, 1.8, 0.22, 0],
+				[  -6,   1.9, -1.9,   2, 1.8, 0.22, 0],
+				[1.05,   1.9,  8.9, 1.9, 1.8, 0.22, 0],  
+				[ 5.9,   1.9,    0,   2, 1.8, 0.22, Math.PI/2],
+				[ 5.9,   1.9,    4,   2, 1.8, 0.22, Math.PI/2],
+				[-7.9,   1.9,  4.9, 1.8, 1.8, 0.22, Math.PI/2]
+			];
+
+			for (var i=0; i<doubleGlassWindowsParameters.length; ++i){
+				createDoubleGlassWindow(doubleGlassWindowsParameters[i][0],
+										doubleGlassWindowsParameters[i][1],
+										doubleGlassWindowsParameters[i][2],
+										doubleGlassWindowsParameters[i][3],
+										doubleGlassWindowsParameters[i][4],
+										doubleGlassWindowsParameters[i][5],
+										doubleGlassWindowsParameters[i][6]);
+			}
+
+
+			//------------------ creating windows with three glasses --------------------//
+			                 // frame is 0.1, glass is 0.02 by default//
+			function createThreeGlassWindow (posX, posY, posZ, length, heigth, width, rotation)
+			{
+				var ThreeGlassWindow = new THREE.Group();
+			
+				var windowsFrameMaterial = new THREE.MeshPhongMaterial({color: 'white'});
+				var frame = new THREE.Mesh (
+					new THREE.BoxGeometry(length, heigth, width), 
+					windowsFrameMaterial
+				);
+
+				var glassMaterial = new THREE.MeshStandardMaterial( {color: 'cyan', opacity: 0.5, transparent: true});
+				var glassHole1 = new THREE.Mesh (
+					new THREE.BoxGeometry((length-0.4)/3, heigth-0.2, width),
+					glassMaterial
+				);
+				var glassHole2 = glassHole1.clone();
+				var glassHole3 = glassHole1.clone();
+				glassHole1.position.x = -(length-0.4)/3-0.1;
+				glassHole2.position.x = 0;
+				glassHole3.position.x = (length-0.4)/3+0.1;
+
+				var csg = new CSG();
+				csg.subtract([frame, glassHole1, glassHole2, glassHole3]);
+				frame = csg.toMesh();
+				frame.material = windowsFrameMaterial;
+				
+				ThreeGlassWindow.add(frame);
+
+				var glass = new THREE.Mesh (
+					new THREE.BoxGeometry((length-0.4)/3, heigth-0.2, 0.02),
+					glassMaterial
+				);
+				glass.position.x = -(length-0.4)/3-0.1;
+				ThreeGlassWindow.add(glass);
+				glass = glass.clone();
+				glass.position.x = 0;
+				ThreeGlassWindow.add(glass);
+				glass = glass.clone();
+				glass.position.x = (length-0.4)/3+0.1;
+				ThreeGlassWindow.add(glass);
+		
+				ThreeGlassWindow.position.set(posX, posY, posZ);
+				ThreeGlassWindow.rotation.y = rotation;
+				scene.add(ThreeGlassWindow);
+			}
+
+			var ThreeGlassWindowsParameters = [
+				[-7.9, 1.9, 0.5, 3, 1.8, 0.22, Math.PI/2]
+			];
+
+			for (var i=0; i<ThreeGlassWindowsParameters.length; ++i){
+				createThreeGlassWindow(ThreeGlassWindowsParameters[i][0],
+									   ThreeGlassWindowsParameters[i][1],
+									   ThreeGlassWindowsParameters[i][2],
+									   ThreeGlassWindowsParameters[i][3],
+									   ThreeGlassWindowsParameters[i][4],
+									   ThreeGlassWindowsParameters[i][5],
+									   ThreeGlassWindowsParameters[i][6]);
+			}
+			
+			
+			{//------------------- creating parallelogram ---------------------//
+			var parallelogram = new THREE.Group();
+			
+			var parallelogramMaterial = new THREE.MeshPhongMaterial({color: 'yellow'});
+			var half = new THREE.Group();
+			var verticalPipe = new THREE.Mesh (
+				new THREE.CylinderGeometry(0.04, 0.04, 1.2, 20),
+				parallelogramMaterial
+			);
+			verticalPipe.position.set(-0.7, 0, 0);
+			half.add(verticalPipe);
+			verticalPipe = verticalPipe.clone();
+			verticalPipe.position.set(0.7, 0, 0);
+			half.add(verticalPipe);
+
+			var cap = new THREE.Mesh (
+				new THREE.SphereGeometry(0.04, 20, 20, 0, Math.PI*2, 0, Math.PI/2),
+				parallelogramMaterial
+			);
+			cap.position.set(-0.7, 0.6, 0);
+			half.add(cap);
+			cap = cap.clone();
+			cap.position.set(0.7, 0.6, 0);
+			half.add(cap);
+			
+			var horizontalPipe = new THREE.Mesh (
+				new THREE.CylinderGeometry(0.03, 0.03, 2.5, 20),
+				parallelogramMaterial
+			);
+			horizontalPipe.rotation.z = Math.PI/2;
+			horizontalPipe.position.set(0, 0.63, 0);
+			half.add(horizontalPipe);
+
+			var bottomPart = new THREE.Mesh (
+				new THREE.BoxGeometry(1.7, 0.03, 0.15),
+				parallelogramMaterial
+			);
+			bottomPart.position.y = -0.6;
+			half.add(bottomPart);
+
+			parallelogram.add(half);
+			half = half.clone();
+			half.position.set(0, 0, 0.8);
+			parallelogram.add(half);
+
+			var bottomConnector = new THREE.Mesh (
+				new THREE.BoxGeometry(0.2, 0.01, 1.1),
+				parallelogramMaterial
+			);
+			bottomConnector.position.set(0.7, -0.62, 0.4);
+			parallelogram.add(bottomConnector);
+			bottomConnector = bottomConnector.clone();
+			bottomConnector.position.x = -0.7;
+			parallelogram.add(bottomConnector);
+
+			parallelogram.scale.set(1.3, 1.3, 1.3);
+			parallelogram.position.set(-3, 0.8, -1.5);
+			scene.add(parallelogram);
+			}
+
+			{//-------------------- creating two etages bed --------------------//
+			var bed = new THREE.Group();
+			var bedMaterial = new THREE.MeshPhongMaterial({color: 'yellow'});
+			var sidePart = new THREE.Group();
+
+			var gredaNagore = new THREE.Mesh (
+				new THREE.BoxGeometry(0.08, 0.9, 0.08),
+				bedMaterial
+			);
+			gredaNagore.position.set(0, 0, 0.4);
+			sidePart.add(gredaNagore);
+
+			gredaNagore = gredaNagore.clone();
+			gredaNagore.position.set(0, 0, -0.4);
+			sidePart.add(gredaNagore);
+
+			var gredaHorizont = new THREE.Mesh (
+				new THREE.BoxGeometry(0.04, 0.18, 0.8),
+				bedMaterial
+			);
+			gredaHorizont.position.set(0, 0.28, 0);
+			sidePart.add(gredaHorizont);
+
+			sidePart.position.set(0.9, 0, 0);
+			bed.add(sidePart);
+
+			sidePart = sidePart.clone();
+			sidePart.position.set(-0.9, 0, 0);
+			bed.add(sidePart);
+
+			var longGreda = new THREE.Mesh (
+				new THREE.BoxGeometry(1.8, 0.18, 0.04),
+				bedMaterial
+			);
+			longGreda.position.set(0, 0.28, -0.4);
+			bed.add(longGreda);
+
+			var detSeSpi = new THREE.Mesh (
+				new THREE.BoxGeometry(1.8, 0.15, 0.8),
+				bedMaterial
+			);
+
+			var placeformatrak = new THREE.Mesh (
+				new THREE.BoxGeometry(1.72, 0.15, 0.72),
+				bedMaterial
+			);
+			placeformatrak.position.set(0, 0.01, 0);
+			csg = new CSG();
+			csg.subtract([detSeSpi, placeformatrak]);
+			detSeSpi = csg.toMesh();
+			detSeSpi.material = bedMaterial;
+			
+			detSeSpi.position.set(0, -0.155, 0);
+			bed.add(detSeSpi);
+
+			var matrak = new THREE.Group();
+			var matrakMaterial = new THREE.MeshStandardMaterial({color: 'white'});
+			matrak.add (
+				new THREE.Mesh (
+					new THREE.BoxGeometry(0.66, 0.2, 1.72),
+					matrakMaterial
+				)
+			);
+			matrak.add (new THREE.Mesh (
+							new THREE.BoxGeometry(0.72, 0.2, 1.66),
+							matrakMaterial
+						));
+
+			var zaoblqne = new THREE.Mesh (
+				new THREE.CylinderGeometry(0.03, 0.03, 0.2, 32, 32),
+				matrakMaterial
+			);
+			zaoblqne.position.set(0.33, 0, 0.83);
+			matrak.add(zaoblqne);
+			zaoblqne = zaoblqne.clone();
+			zaoblqne.position.set(-0.33, 0, 0.83);
+			matrak.add(zaoblqne);
+			zaoblqne = zaoblqne.clone();
+			zaoblqne.position.set(0.33, 0, -0.83);
+			matrak.add(zaoblqne);
+			zaoblqne = zaoblqne.clone();
+			zaoblqne.position.set(-0.33, 0, -0.83);
+			matrak.add(zaoblqne);
+			
+			matrak.rotation.y = Math.PI/2;
+			matrak.position.y = -0.08;
+			bed.add(matrak);
+			
+			var pillowShape = new THREE.Shape();
+			pillowShape.moveTo( 0, 0 );
+			pillowShape.quadraticCurveTo( -0.03, 0.1, 0, 0.2 );
+			pillowShape.quadraticCurveTo( 0.03, 0.1, 0, 0 );
+			
+
+			var pillowMaterial = new THREE.MeshStandardMaterial({color: 'cyan'});
+			var extrudeSettings = { depth: 0.4, bevelEnabled: true, bevelSegments: 60, steps: 60, bevelSize: 0.1, bevelThickness: 0.1, curveSegments: 60 }; 
+			var pillow = new THREE.Mesh ( 
+				new THREE.ExtrudeGeometry( pillowShape, extrudeSettings ),
+				pillowMaterial
+			);
+			pillow.position.set(-0.45, 0.1, -0.2);
+			pillow.rotation.z = Math.PI/2;
+			bed.add(pillow);
+			
+			var doubleBed = new THREE.Group();
+			doubleBed.add(bed);
+			bed = bed.clone();
+			bed.position.set(0, 0.9, 0);
+			doubleBed.add(bed);
+
+			var upperGreda = new THREE.Mesh (
+				new THREE.BoxGeometry(1.2, 0.18, 0.04),
+				bedMaterial
+			);
+			upperGreda.position.set(-0.25, 0.9+0.28, 0.4);
+			doubleBed.add(upperGreda);
+
+			//creating the ladder
+			var ladderMaterial = new THREE.MeshPhongMaterial({color: 'yellow'})
+			var ladder = new THREE.Group();
+			var verticalGreda1 = new THREE.Mesh(
+				new THREE.BoxGeometry(0.1, 1.72, 0.04),
+				ladderMaterial
+			); 
+			verticalGreda1.position.set(-0.25, -0.005, 0);
+			ladder.add(verticalGreda1);
+
+			var verticalGreda2 = new THREE.Mesh (
+				new THREE.BoxGeometry(0.1, 1.27, 0.04),
+				ladderMaterial
+			);
+			verticalGreda2.position.set(0.255, -0.23, 0);
+			ladder.add(verticalGreda2);
+
+			var step = new THREE.Mesh (
+				new THREE.BoxGeometry(0.6, 0.1, 0.04),
+				ladderMaterial
+			);
+			step.position.set(0, -0.45, 0);
+			ladder.add(step);
+			step = step.clone();
+			step.position.set(0, -0.05, 0);
+			ladder.add(step);
+			step = step.clone();
+			step.position.set(0, 0.36, 0);
+			ladder.add(step);
+
+			ladder.position.set(0.55, 0.415, 0.42);
+			doubleBed.add(ladder);
+
+			doubleBed.scale.set(1.3, 1.3, 1.3);
+			doubleBed.position.set(3.4, 0.6, -1.2);			
+			scene.add(doubleBed);
+			}
+
+			// a bench outside
+
+			var material = new THREE.MeshPhongMaterial({
+				color: 'black',
+				shininess: 100,
+				specular: 'white'
+			});
+			
+            var bench = new THREE.Group();
+
+            var sidePart = new THREE.Group();
+    
+            var krak = new THREE.Mesh(
+                new THREE.BoxGeometry(0.2, 2, 0.2), 
+                material
+            );
+            krak.position.set(0, 2/2-1, 1.6);  //alligning to level y = -1 
+            sidePart.add(krak);
+            
+            var big_krak = new THREE.Mesh(
+                new THREE.BoxGeometry(0.2, 3, 0.2), 
+                material
+            );
+            big_krak.position.set(0, 3/2-1, 0);
+            sidePart.add(big_krak);
+
+            var armrest_geometry = new THREE.BoxGeometry(0.3, 0.1, 1.9);
+            var armrestMaterial = new THREE.MeshPhongMaterial({color: 'yellow'});
+            var armrest = new THREE.Mesh(armrest_geometry, armrestMaterial);
+            armrest.position.set(0, 0.96, 0.95); 
+            sidePart.add(armrest);
+            sidePart.position.x = 2;
+            bench.add(sidePart);
+            
+            var otherSide = sidePart.clone();
+            otherSide.position.x = -2;
+            bench.add(otherSide);
+			
+            var backrest = new THREE.Mesh(
+                new THREE.BoxGeometry(4, 1.3, 0.15),
+                armrestMaterial
+            );
+            backrest.position.y = 1.2;
+
+            var hole_geometry = new THREE.BoxGeometry(0.15, 0.9, 0.15);
+            for (var i=-1.6; i<=1.6; i += 0.4){
+                var hole = new THREE.Mesh(hole_geometry);
+                hole.position.set(i, 1.2, 0);
+                var csg = new CSG();
+                csg.subtract([backrest, hole]);
+                backrest = csg.toMesh();
+                backrest.material = armrestMaterial;
+            }
+            bench.add(backrest);
+			
+            var seat_geometry = new THREE.BoxGeometry(4, 0.15, 1.79);
+            var seat = new THREE.Mesh(seat_geometry, armrestMaterial);
+            seat.position.set(0, 0.2, 0.8);
+            bench.add(seat);
+
+			bench.scale.set(0.4, 0.4, 0.4);
+			bench.position.set(4.85, 0.4, 6.3);
+			scene.add( bench );
+
+			//creating a door
+			var door = new THREE.Group();
+			var doorBody = new THREE.Mesh (
+				new THREE.BoxGeometry(0.05, 2, 1),
+				new THREE.MeshStandardMaterial({color: 0x3F2C1D})
+			);
+			doorBody.receiveShadow = true;
+			doorBody.castShadow = true;
+			
+			door.add(doorBody);
+			var handle = new THREE.Mesh (
+				new THREE.SphereGeometry(0.06, 32, 32),
+				new THREE.MeshPhongMaterial({color: 'gold'})
+			);
+			handle.position.set(0.06, 0, -0.4);
+			door.add(handle);
+			handle = handle.clone();
+			handle.position.set(-0.06, 0, -0.4);
+			door.add(handle);
+			door.position.set(2.9, 1, 7.5);
+			scene.add(door);
+
+			door = door.clone();
+			door.position.set(-3.9, 1, -3.5);
+			door.rotation.y = Math.PI;
+			scene.add(door);
+		</script>
+		
+	</body>
+</html>
+
+
